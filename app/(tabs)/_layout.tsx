@@ -1,59 +1,103 @@
-import React from 'react';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Link, Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
+import React from "react";
+import { Image, View, StyleSheet } from "react-native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
-import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+// Import screens
+import HomeScreen from "./index";
+import VideoScreen from "./VideoScreen";
+import ChatScreen from "./ChatScreen";
+import TabFourScreen from "./four";
+import ProfileScreen from "./ProfileScreen";
 
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
+// Create Bottom Tabs Navigator
+const Tab = createBottomTabNavigator();
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+function TabNavigation() {
   return (
-    <Tabs
+    <Tab.Navigator
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
-      }}>
-      <Tabs.Screen
-        name="index"
+        tabBarStyle: {
+          height: 60, // Adjust tab bar height
+          borderTopColor: "transparent",
+          paddingBottom: 10, // Reduce padding
+        },
+        tabBarShowLabel: false, // Hide labels globally
+        headerShown: false, // Hide the header for the tabs
+      }}
+    >
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
         options={{
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="home" color={color} size={24} />
           ),
         }}
       />
-      <Tabs.Screen
-        name="two"
+      <Tab.Screen
+        name="Video"
+        component={VideoScreen}
         options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="video-camera" color={color} size={24} />
+          ),
         }}
       />
-    </Tabs>
+      <Tab.Screen
+        name="Add"
+        component={TabFourScreen}
+        options={{
+          tabBarIcon: () => (
+            <View
+              style={{
+                position: "relative",
+                bottom: 10,
+                width: 70,
+                height: 70,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                source={require("@/assets/images/navAdd.png")}
+                style={{ width: 50, height: 50 }}
+                resizeMode="contain"
+              />
+            </View>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Chat"
+        component={ChatScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="comment" color={color} size={24} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: () => (
+            <View style={{ justifyContent: "center", alignItems: "center" }}>
+              <Image
+                source={require("@/assets/images/profileIcon.png")}
+                style={{
+                  width: 24,
+                  height: 24,
+                  borderRadius: 12, // Circular profile image
+                }}
+                resizeMode="contain"
+              />
+            </View>
+          ),
+        }}
+      />
+    </Tab.Navigator>
   );
 }
+
+export default TabNavigation;
